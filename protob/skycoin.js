@@ -51,6 +51,8 @@ var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
  * @property {number} MessageType_ResponseSkycoinSignMessage=118 MessageType_ResponseSkycoinSignMessage value
  * @property {number} MessageType_GenerateMnemonic=119 MessageType_GenerateMnemonic value
  * @property {number} MessageType_GetVersion=120 MessageType_GetVersion value
+ * @property {number} MessageType_TransactionSign=122 MessageType_TransactionSign value
+ * @property {number} MessageType_ResponseTransactionSign=123 MessageType_ResponseTransactionSign value
  */
 $root.MessageType = (function() {
     var valuesById = {}, values = Object.create(valuesById);
@@ -92,6 +94,8 @@ $root.MessageType = (function() {
     values[valuesById[118] = "MessageType_ResponseSkycoinSignMessage"] = 118;
     values[valuesById[119] = "MessageType_GenerateMnemonic"] = 119;
     values[valuesById[120] = "MessageType_GetVersion"] = 120;
+    values[valuesById[122] = "MessageType_TransactionSign"] = 122;
+    values[valuesById[123] = "MessageType_ResponseTransactionSign"] = 123;
     return values;
 })();
 
@@ -2412,6 +2416,233 @@ $root.ResponseSkycoinAddress = (function() {
     };
 
     return ResponseSkycoinAddress;
+})();
+
+$root.ResponseTransactionSign = (function() {
+
+    /**
+     * Properties of a ResponseTransactionSign.
+     * @exports IResponseTransactionSign
+     * @interface IResponseTransactionSign
+     * @property {Array.<string>|null} [signatures] ResponseTransactionSign signatures
+     * @property {boolean|null} [padding] ResponseTransactionSign padding
+     */
+
+    /**
+     * Constructs a new ResponseTransactionSign.
+     * @exports ResponseTransactionSign
+     * @classdesc Response: Return the signatures necessary for the transaction
+     * @prev TransactionSign
+     * @implements IResponseTransactionSign
+     * @constructor
+     * @param {IResponseTransactionSign=} [properties] Properties to set
+     */
+    function ResponseTransactionSign(properties) {
+        this.signatures = [];
+        if (properties)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * ResponseTransactionSign signatures.
+     * @member {Array.<string>} signatures
+     * @memberof ResponseTransactionSign
+     * @instance
+     */
+    ResponseTransactionSign.prototype.signatures = $util.emptyArray;
+
+    /**
+     * ResponseTransactionSign padding.
+     * @member {boolean} padding
+     * @memberof ResponseTransactionSign
+     * @instance
+     */
+    ResponseTransactionSign.prototype.padding = false;
+
+    /**
+     * Creates a new ResponseTransactionSign instance using the specified properties.
+     * @function create
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {IResponseTransactionSign=} [properties] Properties to set
+     * @returns {ResponseTransactionSign} ResponseTransactionSign instance
+     */
+    ResponseTransactionSign.create = function create(properties) {
+        return new ResponseTransactionSign(properties);
+    };
+
+    /**
+     * Encodes the specified ResponseTransactionSign message. Does not implicitly {@link ResponseTransactionSign.verify|verify} messages.
+     * @function encode
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {IResponseTransactionSign} message ResponseTransactionSign message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ResponseTransactionSign.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        if (message.signatures != null && message.signatures.length)
+            for (var i = 0; i < message.signatures.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.signatures[i]);
+        if (message.padding != null && message.hasOwnProperty("padding"))
+            writer.uint32(/* id 2, wireType 0 =*/16).bool(message.padding);
+        return writer;
+    };
+
+    /**
+     * Encodes the specified ResponseTransactionSign message, length delimited. Does not implicitly {@link ResponseTransactionSign.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {IResponseTransactionSign} message ResponseTransactionSign message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ResponseTransactionSign.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a ResponseTransactionSign message from the specified reader or buffer.
+     * @function decode
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {ResponseTransactionSign} ResponseTransactionSign
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ResponseTransactionSign.decode = function decode(reader, length) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.ResponseTransactionSign();
+        while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+            case 1:
+                if (!(message.signatures && message.signatures.length))
+                    message.signatures = [];
+                message.signatures.push(reader.string());
+                break;
+            case 2:
+                message.padding = reader.bool();
+                break;
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Decodes a ResponseTransactionSign message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {ResponseTransactionSign} ResponseTransactionSign
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ResponseTransactionSign.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a ResponseTransactionSign message.
+     * @function verify
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    ResponseTransactionSign.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (message.signatures != null && message.hasOwnProperty("signatures")) {
+            if (!Array.isArray(message.signatures))
+                return "signatures: array expected";
+            for (var i = 0; i < message.signatures.length; ++i)
+                if (!$util.isString(message.signatures[i]))
+                    return "signatures: string[] expected";
+        }
+        if (message.padding != null && message.hasOwnProperty("padding"))
+            if (typeof message.padding !== "boolean")
+                return "padding: boolean expected";
+        return null;
+    };
+
+    /**
+     * Creates a ResponseTransactionSign message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {ResponseTransactionSign} ResponseTransactionSign
+     */
+    ResponseTransactionSign.fromObject = function fromObject(object) {
+        if (object instanceof $root.ResponseTransactionSign)
+            return object;
+        var message = new $root.ResponseTransactionSign();
+        if (object.signatures) {
+            if (!Array.isArray(object.signatures))
+                throw TypeError(".ResponseTransactionSign.signatures: array expected");
+            message.signatures = [];
+            for (var i = 0; i < object.signatures.length; ++i)
+                message.signatures[i] = String(object.signatures[i]);
+        }
+        if (object.padding != null)
+            message.padding = Boolean(object.padding);
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a ResponseTransactionSign message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof ResponseTransactionSign
+     * @static
+     * @param {ResponseTransactionSign} message ResponseTransactionSign
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    ResponseTransactionSign.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        var object = {};
+        if (options.arrays || options.defaults)
+            object.signatures = [];
+        if (options.defaults)
+            object.padding = false;
+        if (message.signatures && message.signatures.length) {
+            object.signatures = [];
+            for (var j = 0; j < message.signatures.length; ++j)
+                object.signatures[j] = message.signatures[j];
+        }
+        if (message.padding != null && message.hasOwnProperty("padding"))
+            object.padding = message.padding;
+        return object;
+    };
+
+    /**
+     * Converts this ResponseTransactionSign to JSON.
+     * @function toJSON
+     * @memberof ResponseTransactionSign
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    ResponseTransactionSign.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    return ResponseTransactionSign;
 })();
 
 $root.SkycoinCheckMessageSignature = (function() {
@@ -8840,6 +9071,307 @@ $root.FirmwareUpload = (function() {
     return FirmwareUpload;
 })();
 
+$root.TransactionSign = (function() {
+
+    /**
+     * Properties of a TransactionSign.
+     * @exports ITransactionSign
+     * @interface ITransactionSign
+     * @property {number} nbIn TransactionSign nbIn
+     * @property {Array.<ISkycoinTransactionInput>|null} [transactionIn] TransactionSign transactionIn
+     * @property {number} nbOut TransactionSign nbOut
+     * @property {Array.<ISkycoinTransactionOutput>|null} [transactionOut] TransactionSign transactionOut
+     */
+
+    /**
+     * Constructs a new TransactionSign.
+     * @exports TransactionSign
+     * @classdesc Request: Ask device to sign transactions one by one
+     * @next ResponseSkycoinSignMessage
+     * @next Success
+     * @next Failure
+     * @implements ITransactionSign
+     * @constructor
+     * @param {ITransactionSign=} [properties] Properties to set
+     */
+    function TransactionSign(properties) {
+        this.transactionIn = [];
+        this.transactionOut = [];
+        if (properties)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * TransactionSign nbIn.
+     * @member {number} nbIn
+     * @memberof TransactionSign
+     * @instance
+     */
+    TransactionSign.prototype.nbIn = 0;
+
+    /**
+     * TransactionSign transactionIn.
+     * @member {Array.<ISkycoinTransactionInput>} transactionIn
+     * @memberof TransactionSign
+     * @instance
+     */
+    TransactionSign.prototype.transactionIn = $util.emptyArray;
+
+    /**
+     * TransactionSign nbOut.
+     * @member {number} nbOut
+     * @memberof TransactionSign
+     * @instance
+     */
+    TransactionSign.prototype.nbOut = 0;
+
+    /**
+     * TransactionSign transactionOut.
+     * @member {Array.<ISkycoinTransactionOutput>} transactionOut
+     * @memberof TransactionSign
+     * @instance
+     */
+    TransactionSign.prototype.transactionOut = $util.emptyArray;
+
+    /**
+     * Creates a new TransactionSign instance using the specified properties.
+     * @function create
+     * @memberof TransactionSign
+     * @static
+     * @param {ITransactionSign=} [properties] Properties to set
+     * @returns {TransactionSign} TransactionSign instance
+     */
+    TransactionSign.create = function create(properties) {
+        return new TransactionSign(properties);
+    };
+
+    /**
+     * Encodes the specified TransactionSign message. Does not implicitly {@link TransactionSign.verify|verify} messages.
+     * @function encode
+     * @memberof TransactionSign
+     * @static
+     * @param {ITransactionSign} message TransactionSign message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    TransactionSign.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.nbIn);
+        if (message.transactionIn != null && message.transactionIn.length)
+            for (var i = 0; i < message.transactionIn.length; ++i)
+                $root.SkycoinTransactionInput.encode(message.transactionIn[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+        writer.uint32(/* id 3, wireType 0 =*/24).uint32(message.nbOut);
+        if (message.transactionOut != null && message.transactionOut.length)
+            for (var i = 0; i < message.transactionOut.length; ++i)
+                $root.SkycoinTransactionOutput.encode(message.transactionOut[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+        return writer;
+    };
+
+    /**
+     * Encodes the specified TransactionSign message, length delimited. Does not implicitly {@link TransactionSign.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof TransactionSign
+     * @static
+     * @param {ITransactionSign} message TransactionSign message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    TransactionSign.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a TransactionSign message from the specified reader or buffer.
+     * @function decode
+     * @memberof TransactionSign
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {TransactionSign} TransactionSign
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    TransactionSign.decode = function decode(reader, length) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.TransactionSign();
+        while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+            case 1:
+                message.nbIn = reader.uint32();
+                break;
+            case 2:
+                if (!(message.transactionIn && message.transactionIn.length))
+                    message.transactionIn = [];
+                message.transactionIn.push($root.SkycoinTransactionInput.decode(reader, reader.uint32()));
+                break;
+            case 3:
+                message.nbOut = reader.uint32();
+                break;
+            case 4:
+                if (!(message.transactionOut && message.transactionOut.length))
+                    message.transactionOut = [];
+                message.transactionOut.push($root.SkycoinTransactionOutput.decode(reader, reader.uint32()));
+                break;
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        if (!message.hasOwnProperty("nbIn"))
+            throw $util.ProtocolError("missing required 'nbIn'", { instance: message });
+        if (!message.hasOwnProperty("nbOut"))
+            throw $util.ProtocolError("missing required 'nbOut'", { instance: message });
+        return message;
+    };
+
+    /**
+     * Decodes a TransactionSign message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof TransactionSign
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {TransactionSign} TransactionSign
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    TransactionSign.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a TransactionSign message.
+     * @function verify
+     * @memberof TransactionSign
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    TransactionSign.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (!$util.isInteger(message.nbIn))
+            return "nbIn: integer expected";
+        if (message.transactionIn != null && message.hasOwnProperty("transactionIn")) {
+            if (!Array.isArray(message.transactionIn))
+                return "transactionIn: array expected";
+            for (var i = 0; i < message.transactionIn.length; ++i) {
+                var error = $root.SkycoinTransactionInput.verify(message.transactionIn[i]);
+                if (error)
+                    return "transactionIn." + error;
+            }
+        }
+        if (!$util.isInteger(message.nbOut))
+            return "nbOut: integer expected";
+        if (message.transactionOut != null && message.hasOwnProperty("transactionOut")) {
+            if (!Array.isArray(message.transactionOut))
+                return "transactionOut: array expected";
+            for (var i = 0; i < message.transactionOut.length; ++i) {
+                var error = $root.SkycoinTransactionOutput.verify(message.transactionOut[i]);
+                if (error)
+                    return "transactionOut." + error;
+            }
+        }
+        return null;
+    };
+
+    /**
+     * Creates a TransactionSign message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof TransactionSign
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {TransactionSign} TransactionSign
+     */
+    TransactionSign.fromObject = function fromObject(object) {
+        if (object instanceof $root.TransactionSign)
+            return object;
+        var message = new $root.TransactionSign();
+        if (object.nbIn != null)
+            message.nbIn = object.nbIn >>> 0;
+        if (object.transactionIn) {
+            if (!Array.isArray(object.transactionIn))
+                throw TypeError(".TransactionSign.transactionIn: array expected");
+            message.transactionIn = [];
+            for (var i = 0; i < object.transactionIn.length; ++i) {
+                if (typeof object.transactionIn[i] !== "object")
+                    throw TypeError(".TransactionSign.transactionIn: object expected");
+                message.transactionIn[i] = $root.SkycoinTransactionInput.fromObject(object.transactionIn[i]);
+            }
+        }
+        if (object.nbOut != null)
+            message.nbOut = object.nbOut >>> 0;
+        if (object.transactionOut) {
+            if (!Array.isArray(object.transactionOut))
+                throw TypeError(".TransactionSign.transactionOut: array expected");
+            message.transactionOut = [];
+            for (var i = 0; i < object.transactionOut.length; ++i) {
+                if (typeof object.transactionOut[i] !== "object")
+                    throw TypeError(".TransactionSign.transactionOut: object expected");
+                message.transactionOut[i] = $root.SkycoinTransactionOutput.fromObject(object.transactionOut[i]);
+            }
+        }
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a TransactionSign message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof TransactionSign
+     * @static
+     * @param {TransactionSign} message TransactionSign
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    TransactionSign.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        var object = {};
+        if (options.arrays || options.defaults) {
+            object.transactionIn = [];
+            object.transactionOut = [];
+        }
+        if (options.defaults) {
+            object.nbIn = 0;
+            object.nbOut = 0;
+        }
+        if (message.nbIn != null && message.hasOwnProperty("nbIn"))
+            object.nbIn = message.nbIn;
+        if (message.transactionIn && message.transactionIn.length) {
+            object.transactionIn = [];
+            for (var j = 0; j < message.transactionIn.length; ++j)
+                object.transactionIn[j] = $root.SkycoinTransactionInput.toObject(message.transactionIn[j], options);
+        }
+        if (message.nbOut != null && message.hasOwnProperty("nbOut"))
+            object.nbOut = message.nbOut;
+        if (message.transactionOut && message.transactionOut.length) {
+            object.transactionOut = [];
+            for (var j = 0; j < message.transactionOut.length; ++j)
+                object.transactionOut[j] = $root.SkycoinTransactionOutput.toObject(message.transactionOut[j], options);
+        }
+        return object;
+    };
+
+    /**
+     * Converts this TransactionSign to JSON.
+     * @function toJSON
+     * @memberof TransactionSign
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    TransactionSign.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    return TransactionSign;
+})();
+
 /**
  * Type of failures returned by Failure message
  * @used_in Failure
@@ -12726,6 +13258,470 @@ $root.SkycoinAddressType = (function() {
     values[valuesById[1] = "AddressTypeSkycoin"] = 1;
     values[valuesById[2] = "AddressTypeBitcoin"] = 2;
     return values;
+})();
+
+$root.SkycoinTransactionInput = (function() {
+
+    /**
+     * Properties of a SkycoinTransactionInput.
+     * @exports ISkycoinTransactionInput
+     * @interface ISkycoinTransactionInput
+     * @property {string} hashIn SkycoinTransactionInput hashIn
+     * @property {number} index SkycoinTransactionInput index
+     */
+
+    /**
+     * Constructs a new SkycoinTransactionInput.
+     * @exports SkycoinTransactionInput
+     * @classdesc Represents a SkycoinTransactionInput.
+     * @implements ISkycoinTransactionInput
+     * @constructor
+     * @param {ISkycoinTransactionInput=} [properties] Properties to set
+     */
+    function SkycoinTransactionInput(properties) {
+        if (properties)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * SkycoinTransactionInput hashIn.
+     * @member {string} hashIn
+     * @memberof SkycoinTransactionInput
+     * @instance
+     */
+    SkycoinTransactionInput.prototype.hashIn = "";
+
+    /**
+     * SkycoinTransactionInput index.
+     * @member {number} index
+     * @memberof SkycoinTransactionInput
+     * @instance
+     */
+    SkycoinTransactionInput.prototype.index = 0;
+
+    /**
+     * Creates a new SkycoinTransactionInput instance using the specified properties.
+     * @function create
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {ISkycoinTransactionInput=} [properties] Properties to set
+     * @returns {SkycoinTransactionInput} SkycoinTransactionInput instance
+     */
+    SkycoinTransactionInput.create = function create(properties) {
+        return new SkycoinTransactionInput(properties);
+    };
+
+    /**
+     * Encodes the specified SkycoinTransactionInput message. Does not implicitly {@link SkycoinTransactionInput.verify|verify} messages.
+     * @function encode
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {ISkycoinTransactionInput} message SkycoinTransactionInput message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    SkycoinTransactionInput.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        writer.uint32(/* id 1, wireType 2 =*/10).string(message.hashIn);
+        writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.index);
+        return writer;
+    };
+
+    /**
+     * Encodes the specified SkycoinTransactionInput message, length delimited. Does not implicitly {@link SkycoinTransactionInput.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {ISkycoinTransactionInput} message SkycoinTransactionInput message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    SkycoinTransactionInput.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a SkycoinTransactionInput message from the specified reader or buffer.
+     * @function decode
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {SkycoinTransactionInput} SkycoinTransactionInput
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    SkycoinTransactionInput.decode = function decode(reader, length) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.SkycoinTransactionInput();
+        while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+            case 1:
+                message.hashIn = reader.string();
+                break;
+            case 2:
+                message.index = reader.uint32();
+                break;
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        if (!message.hasOwnProperty("hashIn"))
+            throw $util.ProtocolError("missing required 'hashIn'", { instance: message });
+        if (!message.hasOwnProperty("index"))
+            throw $util.ProtocolError("missing required 'index'", { instance: message });
+        return message;
+    };
+
+    /**
+     * Decodes a SkycoinTransactionInput message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {SkycoinTransactionInput} SkycoinTransactionInput
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    SkycoinTransactionInput.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a SkycoinTransactionInput message.
+     * @function verify
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    SkycoinTransactionInput.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (!$util.isString(message.hashIn))
+            return "hashIn: string expected";
+        if (!$util.isInteger(message.index))
+            return "index: integer expected";
+        return null;
+    };
+
+    /**
+     * Creates a SkycoinTransactionInput message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {SkycoinTransactionInput} SkycoinTransactionInput
+     */
+    SkycoinTransactionInput.fromObject = function fromObject(object) {
+        if (object instanceof $root.SkycoinTransactionInput)
+            return object;
+        var message = new $root.SkycoinTransactionInput();
+        if (object.hashIn != null)
+            message.hashIn = String(object.hashIn);
+        if (object.index != null)
+            message.index = object.index >>> 0;
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a SkycoinTransactionInput message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof SkycoinTransactionInput
+     * @static
+     * @param {SkycoinTransactionInput} message SkycoinTransactionInput
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    SkycoinTransactionInput.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        var object = {};
+        if (options.defaults) {
+            object.hashIn = "";
+            object.index = 0;
+        }
+        if (message.hashIn != null && message.hasOwnProperty("hashIn"))
+            object.hashIn = message.hashIn;
+        if (message.index != null && message.hasOwnProperty("index"))
+            object.index = message.index;
+        return object;
+    };
+
+    /**
+     * Converts this SkycoinTransactionInput to JSON.
+     * @function toJSON
+     * @memberof SkycoinTransactionInput
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    SkycoinTransactionInput.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    return SkycoinTransactionInput;
+})();
+
+$root.SkycoinTransactionOutput = (function() {
+
+    /**
+     * Properties of a SkycoinTransactionOutput.
+     * @exports ISkycoinTransactionOutput
+     * @interface ISkycoinTransactionOutput
+     * @property {string} address SkycoinTransactionOutput address
+     * @property {number} coin SkycoinTransactionOutput coin
+     * @property {number} hour SkycoinTransactionOutput hour
+     * @property {number|null} [addressIndex] SkycoinTransactionOutput addressIndex
+     */
+
+    /**
+     * Constructs a new SkycoinTransactionOutput.
+     * @exports SkycoinTransactionOutput
+     * @classdesc Represents a SkycoinTransactionOutput.
+     * @implements ISkycoinTransactionOutput
+     * @constructor
+     * @param {ISkycoinTransactionOutput=} [properties] Properties to set
+     */
+    function SkycoinTransactionOutput(properties) {
+        if (properties)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+
+    /**
+     * SkycoinTransactionOutput address.
+     * @member {string} address
+     * @memberof SkycoinTransactionOutput
+     * @instance
+     */
+    SkycoinTransactionOutput.prototype.address = "";
+
+    /**
+     * SkycoinTransactionOutput coin.
+     * @member {number} coin
+     * @memberof SkycoinTransactionOutput
+     * @instance
+     */
+    SkycoinTransactionOutput.prototype.coin = 0;
+
+    /**
+     * SkycoinTransactionOutput hour.
+     * @member {number} hour
+     * @memberof SkycoinTransactionOutput
+     * @instance
+     */
+    SkycoinTransactionOutput.prototype.hour = 0;
+
+    /**
+     * SkycoinTransactionOutput addressIndex.
+     * @member {number} addressIndex
+     * @memberof SkycoinTransactionOutput
+     * @instance
+     */
+    SkycoinTransactionOutput.prototype.addressIndex = 0;
+
+    /**
+     * Creates a new SkycoinTransactionOutput instance using the specified properties.
+     * @function create
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {ISkycoinTransactionOutput=} [properties] Properties to set
+     * @returns {SkycoinTransactionOutput} SkycoinTransactionOutput instance
+     */
+    SkycoinTransactionOutput.create = function create(properties) {
+        return new SkycoinTransactionOutput(properties);
+    };
+
+    /**
+     * Encodes the specified SkycoinTransactionOutput message. Does not implicitly {@link SkycoinTransactionOutput.verify|verify} messages.
+     * @function encode
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {ISkycoinTransactionOutput} message SkycoinTransactionOutput message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    SkycoinTransactionOutput.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        writer.uint32(/* id 1, wireType 2 =*/10).string(message.address);
+        writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.coin);
+        writer.uint32(/* id 3, wireType 0 =*/24).uint32(message.hour);
+        if (message.addressIndex != null && message.hasOwnProperty("addressIndex"))
+            writer.uint32(/* id 4, wireType 0 =*/32).uint32(message.addressIndex);
+        return writer;
+    };
+
+    /**
+     * Encodes the specified SkycoinTransactionOutput message, length delimited. Does not implicitly {@link SkycoinTransactionOutput.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {ISkycoinTransactionOutput} message SkycoinTransactionOutput message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    SkycoinTransactionOutput.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+
+    /**
+     * Decodes a SkycoinTransactionOutput message from the specified reader or buffer.
+     * @function decode
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {SkycoinTransactionOutput} SkycoinTransactionOutput
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    SkycoinTransactionOutput.decode = function decode(reader, length) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.SkycoinTransactionOutput();
+        while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+            case 1:
+                message.address = reader.string();
+                break;
+            case 2:
+                message.coin = reader.uint32();
+                break;
+            case 3:
+                message.hour = reader.uint32();
+                break;
+            case 4:
+                message.addressIndex = reader.uint32();
+                break;
+            default:
+                reader.skipType(tag & 7);
+                break;
+            }
+        }
+        if (!message.hasOwnProperty("address"))
+            throw $util.ProtocolError("missing required 'address'", { instance: message });
+        if (!message.hasOwnProperty("coin"))
+            throw $util.ProtocolError("missing required 'coin'", { instance: message });
+        if (!message.hasOwnProperty("hour"))
+            throw $util.ProtocolError("missing required 'hour'", { instance: message });
+        return message;
+    };
+
+    /**
+     * Decodes a SkycoinTransactionOutput message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {SkycoinTransactionOutput} SkycoinTransactionOutput
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    SkycoinTransactionOutput.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+
+    /**
+     * Verifies a SkycoinTransactionOutput message.
+     * @function verify
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    SkycoinTransactionOutput.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (!$util.isString(message.address))
+            return "address: string expected";
+        if (!$util.isInteger(message.coin))
+            return "coin: integer expected";
+        if (!$util.isInteger(message.hour))
+            return "hour: integer expected";
+        if (message.addressIndex != null && message.hasOwnProperty("addressIndex"))
+            if (!$util.isInteger(message.addressIndex))
+                return "addressIndex: integer expected";
+        return null;
+    };
+
+    /**
+     * Creates a SkycoinTransactionOutput message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {SkycoinTransactionOutput} SkycoinTransactionOutput
+     */
+    SkycoinTransactionOutput.fromObject = function fromObject(object) {
+        if (object instanceof $root.SkycoinTransactionOutput)
+            return object;
+        var message = new $root.SkycoinTransactionOutput();
+        if (object.address != null)
+            message.address = String(object.address);
+        if (object.coin != null)
+            message.coin = object.coin >>> 0;
+        if (object.hour != null)
+            message.hour = object.hour >>> 0;
+        if (object.addressIndex != null)
+            message.addressIndex = object.addressIndex >>> 0;
+        return message;
+    };
+
+    /**
+     * Creates a plain object from a SkycoinTransactionOutput message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof SkycoinTransactionOutput
+     * @static
+     * @param {SkycoinTransactionOutput} message SkycoinTransactionOutput
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    SkycoinTransactionOutput.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        var object = {};
+        if (options.defaults) {
+            object.address = "";
+            object.coin = 0;
+            object.hour = 0;
+            object.addressIndex = 0;
+        }
+        if (message.address != null && message.hasOwnProperty("address"))
+            object.address = message.address;
+        if (message.coin != null && message.hasOwnProperty("coin"))
+            object.coin = message.coin;
+        if (message.hour != null && message.hasOwnProperty("hour"))
+            object.hour = message.hour;
+        if (message.addressIndex != null && message.hasOwnProperty("addressIndex"))
+            object.addressIndex = message.addressIndex;
+        return object;
+    };
+
+    /**
+     * Converts this SkycoinTransactionOutput to JSON.
+     * @function toJSON
+     * @memberof SkycoinTransactionOutput
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    SkycoinTransactionOutput.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    return SkycoinTransactionOutput;
 })();
 
 $root.google = (function() {

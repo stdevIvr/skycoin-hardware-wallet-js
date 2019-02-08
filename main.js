@@ -1,11 +1,29 @@
 const deviceWallet = require('./device-wallet');
-const DeviceDetectionEvent = require('./device-detection-lib/device-detection/DeviceEventObserver');
-const transportNodeHid = require('./device-detection-lib/device-detection/TransportNodeHid');
+const scanf = require('scanf');
 
-console.log(deviceDetectionEvent);
-const observer = new DeviceDetectionEvent();
-transportNodeHid.listen(observer);
+const rejectPromise = function(msg) {
+  console.log("Promise rejected", msg);
+};
 
+const wordReader = function() {
+    return new Promise((resolve) => {
+        console.log("Inside wordReader callback, please input word: ");
+        const word = scanf('%s');
+        resolve(word);
+    });
+};
+
+const pinCodeReader = function() {
+    return new Promise((resolve, reject) => {
+        console.log("Got inside pinCodeReader");
+        const pinCode = scanf('%s');
+        if (pinCode.length != 4) {
+            reject(new Error("Bad bad pin code"));
+            return;
+        }
+        resolve(pinCode);
+    });
+};
 // eslint-disable-next-line max-lines-per-function
 const sandbox = function() {
   if( deviceWallet.getDevice() === null ) {
@@ -15,56 +33,62 @@ const sandbox = function() {
     console.log("Skycoin hardware is plugged in");
     deviceWallet.setDeviceType(deviceWallet.DeviceTypeEnum.USB);
   }
+  const wipePromise = deviceWallet.devWipeDevice();
+  wipePromise.then(
+    // eslint-disable-next-line max-lines-per-function
+    () => {
+    // eslint-disable-next-line max-len
+    const setMnemonicPromise = deviceWallet.devSetMnemonic("cloud flower upset remain green metal below cup stem infant art thank");
+    setMnemonicPromise.then(
+      // eslint-disable-next-line max-statements
+      () => {
+        const addrPromise = deviceWallet.devAddressGen(1, 0);
+        addrPromise.then(
+          (addresses) => {
+            console.log("Address Promise resolved", addresses);
+            const input1 = {
+              'hashIn': "a885343cc57aedaab56ad88d860f2bd436289b0248d1adc55bcfa0d9b9b807c3",
+              'index': 0
+            };
+            const inputTransactionArray = [input1];
+            const output1 = {
+              'address': "zC8GAQGQBfwk7vtTxVoRG7iMperHNuyYPs",
+              'coin': 1000000,
+              'hour': 1
+            };
+            const outputTransactionArray = [output1];
+            const signPromise = deviceWallet.devSkycoinTransactionSign(
+              inputTransactionArray,
+              outputTransactionArray,
+              pinCodeReader,
+              wordReader
+            );
 
-  const rejectPromise = function(msg) {
-      console.log("Promise rejected", msg);
-  };
-  const addrPromise = deviceWallet.devAddressGen(2, 3);
-  addrPromise.then(
-    (addresses) => {
-      console.log("Address Promise resolved", addresses);
-      const signPromise = deviceWallet.devSkycoinSignMessage(3, "Hello World!");
-      signPromise.then(
-        (signature) => {
-        console.log("Signature promise resolved", signature);
-        const checkSignPromise = deviceWallet.devCheckMessageSignature(
-          "2NckPkQRQFa5E7HtqDkZmV1TH4HCzR2N5J6",
-          "Hello World!",
-          "NGV8kPw8FZuYFWYzMa3oHJhHmW4WPTnSUUaEFYBvyS8Te8WxrHDuDdbgVqFkdEg5FzE5QDdwMQcXcWMY4enJhkDE"
-        );
-        checkSignPromise.then(
-          (check) => {
-            console.log(check);
-            const wipePromise = deviceWallet.devWipeDevice();
-            wipePromise.then(
-              (msg) => {
-                console.log(msg);
-                const setMnemonicPromise =
-                  deviceWallet.devSetMnemonic("cloud flower upset remain green metal below cup stem infant art thank");
-                setMnemonicPromise.then(
-                  (mnemonicMsg) => {
-                    console.log(mnemonicMsg);
-                    const changePinPromise = deviceWallet.devChangePin();
-                    changePinPromise.then(
-                    () => {
-                      console.log("Finally change pin success");
-                    },
-                    rejectPromise
-                    );
+            signPromise.then(
+              (response) => {
+                console.log("Signature promise resolved", response);
+                const checkSignPromise = deviceWallet.devCheckMessageSignature(
+                  "2EU3JbveHdkxW6z5tdhbbB2kRAWvXC2pLzw",
+                  "27b43911824fef1a6b1a5a1906e45dc50b252650622e0c6eda085f77aa2f33d1",
+                  response[0]
+                );
+                checkSignPromise.then(
+                  (check) => {
+                    console.log(check);
                   },
                   rejectPromise
-                  );
+                );
               },
               rejectPromise
-              );
+            );
           },
           rejectPromise
-          );
+        );
       },
       rejectPromise
-      );
-    },
-    rejectPromise
+    );
+  },
+  rejectPromise
   );
 };
 sandbox();

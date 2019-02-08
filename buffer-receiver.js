@@ -13,9 +13,13 @@ class BufferReceiver {
     parseHeader(data) {
         console.log("Received data of length: ", data.length);
         const dv8 = new Uint8Array(data);
-        this.kind = new Uint16Array(dv8.slice(4, 5))[0];
-        this.msgSize = new Uint32Array(dv8.slice(8, 11))[0];
+        const msgIdSlice = dv8.slice(3, 5);
+        const msgSizeSlice = dv8.slice(5, 9);
+        this.kind = msgIdSlice[1] + (msgIdSlice[0] << 8);
+        this.msgSize = msgSizeSlice[3] + (msgSizeSlice[2] << 8) + (msgSizeSlice[1] << 16) + (msgSizeSlice[0] << 24);
         console.log("That message says its size is: ", this.msgSize);
+        console.log("msgid slice:", msgIdSlice);
+        console.log("Slice:", msgSizeSlice);
         if (this.msgSize == 0) {
             console.log("Skiping message parsing, msgSize == 0");
             this.dataBuffer = new Uint8Array(64);
@@ -55,7 +59,8 @@ class BufferReceiver {
             "Received data", " msg kind: ",
             messages.MessageType[this.kind],
             " size: ", this.msgSize, "buffer lenght: ",
-            this.dataBuffer.byteLength
+            this.dataBuffer.byteLength,
+            "\nRemaining bytesToGet:", this.bytesToGet
             );
 
         if (this.bytesToGet > 0) {

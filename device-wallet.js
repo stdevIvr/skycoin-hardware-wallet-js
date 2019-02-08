@@ -365,6 +365,56 @@ const createBackupDeviceRequest = function() {
     return dataBytesFromChunks(chunks);
 };
 
+// eslint-disable-next-line max-statements
+const createTransactionSignRequest = function(inputTransactions, outputTransactions) {
+    const transactionIn = [];
+    const transactionOut = [];
+    const nbIn = inputTransactions.length;
+    const nbOut = outputTransactions.length;
+    for (i = 0; i < nbIn; i += 1) {
+        transactionIn[i] = {
+            'hashIn': inputTransactions[i].hashIn,
+            'index': inputTransactions[i].index
+        };
+        console.log(
+            "Pushing input:",
+            transactionIn[i].hashIn,
+            "index: ",
+            transactionIn[i].index
+            );
+    }
+    for (i = 0; i < nbOut; i += 1) {
+        transactionOut[i] = {
+            'address': outputTransactions[i].address,
+            'addressIndex': outputTransactions[i].address_index,
+            'coin': outputTransactions[i].coin,
+            'hour': outputTransactions[i].hour
+        };
+        console.log(
+            "Pushing output:",
+            transactionOut[i].address,
+            "coin:", transactionOut[i].coin,
+            "hour:", transactionOut[i].hour,
+            "address_index:", transactionOut[i].addressIndex
+            );
+    }
+    console.log("ArrayBuffer input len: ", transactionIn.length);
+    console.log("ArrayBuffer output len: ", transactionOut.length);
+    const msgStructure = {
+        nbIn,
+        nbOut,
+        transactionIn,
+        transactionOut
+    };
+    const msg = messages.TransactionSign.create(msgStructure);
+    const buffer = messages.TransactionSign.encode(msg).finish();
+    const chunks = makeTrezorMessage(
+        buffer,
+        messages.MessageType.MessageType_TransactionSign
+    );
+    return dataBytesFromChunks(chunks);
+};
+
 const createSignMessageRequest = function(addressN, message) {
     const msgStructure = {
         addressN,
@@ -535,6 +585,22 @@ const decodeFailureAndPinCode = function(kind, dataBuffer) {
     return "decodeFailureAndPinCode failed";
 };
 
+const decodeTransactionSignAnswer = function(kind, dataBuffer) {
+    let signatures = [];
+    if (kind == messages.MessageType.
+        MessageType_ResponseTransactionSign) {
+        try {
+            console.log(dataBuffer.slice(-5), dataBuffer.length);
+            const answer = messages.ResponseTransactionSign.
+                            decode(dataBuffer);
+            signatures = answer.signatures;
+        } catch (e) {
+            console.error("Wire format is invalid", e);
+        }
+    }
+    return signatures;
+};
+
 const decodeSignMessageAnswer = function(kind, dataBuffer) {
     let signature = "";
     decodeFailureAndPinCode(kind, dataBuffer);
@@ -573,7 +639,7 @@ const devButtonRequestCallback = function(kind, data, callback) {
         const dataBytes = createButtonAckRequest();
         const deviceHandle = new DeviceHandler(deviceType);
         const devReadCallback = function(datakind, dta) {
-            console.log("User hit a button, calling: ", callback);
+            console.log("User hit a button");
             deviceHandle.close();
             if (callback !== null && callback !== undefined) {
                 // eslint-disable-next-line callback-return
@@ -792,6 +858,17 @@ const devApplySettings = function(usePassphrase, pinCodeReader) {
     });
 };
 
+const devSendSkycoinTransactionSign = function(inputTransactions, outputTransactions, callback) {
+    const dataBytes = createTransactionSignRequest(inputTransactions, outputTransactions);
+    const deviceHandle = new DeviceHandler(deviceType);
+    const devReadCallback = function(kind, dataBuffer) {
+        deviceHandle.close();
+        callback(kind, dataBuffer);
+    };
+    deviceHandle.read(devReadCallback);
+    deviceHandle.write(dataBytes);
+};
+
 const devSendSkycoinSignMessage = function(addressN, message, callback) {
     const dataBytes = createSignMessageRequest(addressN, message);
     const deviceHandle = new DeviceHandler(deviceType);
@@ -827,6 +904,44 @@ const devSkycoinSignMessage = function(addressN, message, pinCodeReader, passphr
             }
         };
         devSendSkycoinSignMessage(addressN, message, skycoinSignHander);
+    });
+};
+
+// eslint-disable-next-line max-params
+const devSkycoinTransactionSign = function(
+    inputTransactions,
+    outputTransactions,
+    pinCodeReader,
+    passphraseReader
+    ) {
+    return new Promise((resolve, reject) => {
+        const skycoinTransactionSignHander = function(kind, dataBuffer) {
+            console.log("TransactionSign received message kind:", messages.MessageType[kind]);
+            switch (kind) {
+            case messages.MessageType.MessageType_ResponseTransactionSign:
+                resolve(decodeTransactionSignAnswer(kind, dataBuffer));
+                break;
+            case messages.MessageType.MessageType_Success:
+                reject(new Error("Should end with ResponseTransactionSign request"));
+                break;
+            case messages.MessageType.MessageType_Failure:
+                reject(new Error(decodeFailureAndPinCode(kind, dataBuffer)));
+                break;
+            case messages.MessageType.MessageType_ButtonRequest:
+                devButtonRequestCallback(kind, dataBuffer, skycoinTransactionSignHander);
+                break;
+            case messages.MessageType.MessageType_PassphraseRequest:
+                devSendPassphraseAck(skycoinTransactionSignHander, passphraseReader);
+                break;
+            case messages.MessageType.MessageType_PinMatrixRequest:
+                devSendPinCodeRequest(skycoinTransactionSignHander, pinCodeReader);
+                break;
+             default:
+                reject(new Error(`Unexpected answer from the device: ${kind}`));
+                break;
+            }
+        };
+        devSendSkycoinTransactionSign(inputTransactions, outputTransactions, skycoinTransactionSignHander);
     });
 };
 
@@ -870,7 +985,7 @@ const devWipeDevice = function() {
                     if (datakind == messages.MessageType.MessageType_Success) {
                         resolve("Wipe Device operation completed");
                     } else {
-                        resolve("Wipe Device operation failed or refused");
+                        reject("Wipe Device operation failed or refused");
                     }
                 });
             };
@@ -1074,6 +1189,7 @@ module.exports = {
     devRecoveryDevice,
     devSetMnemonic,
     devSkycoinSignMessage,
+    devSkycoinTransactionSign,
     devUpdateFirmware,
     devWipeDevice,
     getDevice,
