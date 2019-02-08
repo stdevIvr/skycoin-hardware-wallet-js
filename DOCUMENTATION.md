@@ -5,6 +5,30 @@ sending instructions.
 
 This documentation contains general information about how to use the library.
 
+<!-- MarkdownTOC autolink="true" bracket="round" levels="1,2,3" -->
+
+
+<!-- /MarkdownTOC -->
+
+## Use case scenarios
+
+The following actions are possible
+
+- Apply settings like passphrase and pin - see [devApplySettings](#devApplySettings)
+- Update firmware - see [devUpdateFirmware](#devUpdateFirmware)
+- Ask device to generate addresses - see [devAddressGen](#devAddressGen)
+- Configure device mnemonic - see [devSetMnemonic](#devSetMnemonic)
+- Ask device to generate mnemonic - see [devGenerateMnemonic](#devGenerateMnemonic)
+- Configure device PIN code - see [devChangePin](#devChangePin)
+- Get firmware version - see [devGetVersionDevice](#devGetVersionDevice)
+- Ask device to sign message - see [devSkycoinSignMessage](#devSkycoinSignMessage)
+- Ask device to check signature - see [devCheckMessageSignature](#devCheckMessageSignature)
+- Wipe device - see [devWipeDevice](#devWipeDevice)
+- Ask the device to perform the seed backup procedure - see [devBackupDevice](#devBackupDevice)
+- Ask the device to perform the seed recovery procedure - see [devRecoveryDevice](#devRecoveryDevice)
+- Ask the device Features - see [devGetFeatures](#devGetFeatures)
+- Ask the device to cancel the ongoing procedure - see [devCancelRequest](#devCancelRequest)
+
 ## General characteristics to take into account
 
 - As many of the operations performed by the hardware wallet can be slow, most of the functions of the library
@@ -29,7 +53,7 @@ function before starting a new operation.
 - When a function returns a promise and the procedure fails, the promise could be rejected, but some functions
 don't do that, so it is important to be aware of the particular way in which each function responds.
 
-## Functions
+## Functions reference
 
 - [devAddressGen](#devAddressGen)
 - [devApplySettings](#devApplySettings)
