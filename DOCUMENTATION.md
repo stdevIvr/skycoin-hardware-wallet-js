@@ -7,10 +7,33 @@ This documentation contains general information about how to use the library.
 
 <!-- MarkdownTOC autolink="true" bracket="round" levels="1,2,3" -->
 
+- [Use case summary](#)
+- [General characteristics to take into account](#general-characteristics-to-take-into-account)
+- [Functions reference](#functions-reference)
+  - [devAddressGen](#devAddressGen)
+  - [devApplySettings](#devApplySettings)
+  - [devBackupDevice](#devBackupDevice)
+  - [devCancelRequest](#devCancelRequest)
+  - [devChangePin](#devChangePin)
+  - [devCheckMessageSignature](#devCheckMessageSignature)
+  - [devGenerateMnemonic](#devGenerateMnemonic)
+  - [devGetFeatures](#devGetFeatures)
+  - [devGetVersionDevice](#devGetVersionDevice)
+  - [devRecoveryDevice](#devRecoveryDevice)
+  - [devSetMnemonic](#devSetMnemonic)
+  - [devSkycoinSignMessage](#devSkycoinSignMessage)
+  - [devSkycoinTransactionSign](#devSkycoinTransactionSign)
+  - [devUpdateFirmware](#devUpdateFirmware)
+  - [devWipeDevice](#devWipeDevice)
+  - [getDevice](#getDevice)
+  - [setDeviceType](#setDeviceType)
+- [Auxiliary functions](#auxiliary-functions)
+  - [Auxiliary function to obtain the PIN](#auxiliary-function-to-obtain-the-pin)
+  - [Auxiliary function to obtain the passphrase](#auxiliary-function-to-obtain-the-passphrase)
 
 <!-- /MarkdownTOC -->
 
-## Overview
+## Use case summary
 
 The following actions are possible
 
