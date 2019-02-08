@@ -10,7 +10,7 @@ This documentation contains general information about how to use the library.
 
 <!-- /MarkdownTOC -->
 
-## Use case scenarios
+## Overview
 
 The following actions are possible
 
@@ -28,6 +28,7 @@ The following actions are possible
 - Ask the device to perform the seed recovery procedure - see [devRecoveryDevice](#devRecoveryDevice)
 - Ask the device Features - see [devGetFeatures](#devGetFeatures)
 - Ask the device to cancel the ongoing procedure - see [devCancelRequest](#devCancelRequest)
+- Ask the device to sign a transaction using the provided information - see [devSkycoinTransactionSign](#devSkycoinTransactionSign)
 
 ## General characteristics to take into account
 
@@ -67,6 +68,7 @@ don't do that, so it is important to be aware of the particular way in which eac
 - [devRecoveryDevice](#devRecoveryDevice)
 - [devSetMnemonic](#devSetMnemonic)
 - [devSkycoinSignMessage](#devSkycoinSignMessage)
+- [devSkycoinTransactionSign](#devSkycoinTransactionSign)
 - [devUpdateFirmware](#devUpdateFirmware)
 - [devWipeDevice](#devWipeDevice)
 - [getDevice](#getDevice)
@@ -403,6 +405,39 @@ Allows to sign a message with the hardware wallet.
 *Params:*
 - addressN: Index of the address that will be used to sign the message.
 - message: Message to be signed.
+- pinCodeReader: [Auxiliary function to obtain the PIN.](#auxiliary-function-to-obtain-the-PIN)
+- passphraseReader: [Auxiliary function to obtain the passphrase.](#auxiliary-function-to-obtain-the-passphrase)
+
+*Return value:*
+
+A promise that receives a text string that depends on the result of the operation:
+- If the wallet does not have a seed (promise rejected): `Error: Mnemonic not set`.
+- If the operation ends correctly: the signature returned by the hardware wallet, in plain text.
+
+*Notes:*
+- Since the hardware wallet internally recovers the addresses sequentially, starting with the first one, the
+process will be slower if an address with high index is used.
+
+### devSkycoinTransactionSign
+
+*Signature:*
+```
+devSkycoinTransactionSign(inputTransactions, outputTransactions, pinCodeReader, passphraseReader)
+```
+
+*Purpose:*
+
+Allows to sign a transaction with the hardware wallet.
+
+*Params:*
+- inputTransactions: list of objects with the following fields
+  * 'hashIn': input hash
+  * 'index': input index
+- outputTransactions: list of objects with the following fields
+  `address`: Skycoin address in `base58` format
+  `addressIndex`: address index
+  `coin`: output coins
+  `hour`: output hours
 - pinCodeReader: [Auxiliary function to obtain the PIN.](#auxiliary-function-to-obtain-the-PIN)
 - passphraseReader: [Auxiliary function to obtain the passphrase.](#auxiliary-function-to-obtain-the-passphrase)
 
