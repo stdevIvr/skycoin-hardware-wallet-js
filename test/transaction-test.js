@@ -1,5 +1,40 @@
 const Suite = require('node-test');
 const deviceWallet = require('../device-wallet');
+const dgram = require('dgram');
+
+var socket = dgram.createSocket('udp4');
+
+socket.bind();
+
+const pressButton = function(type) {
+    /**
+     * The message to press the button is composed by two parts:
+     * [0, 1, 2, 3, 4] => Acknowledgement of the fake press event
+     * [0 | 1 | 2]
+     *  - 0: Press the Left button
+     *  - 1: Press the Right button
+     *  - 2: Press both
+     //*/
+    socket.send(Buffer.from([0, 1, 2, 3, 4, type]), 0, 6, 21324, '127.0.0.1', function(err) {
+        if ( err ) {
+            console.log('\n\nError trying to send the button signal\n\n');
+            return;
+        }
+        console.log('\n\nPress the button signal sent\n\n');
+    });
+};
+
+const pressButtonLeft = function() {
+    pressButton(0);
+};
+
+const pressButtonRight = function() {
+    pressButton(1);
+};
+
+const pressButtonLeftAndRight = function() {
+    pressButton(2);
+};
 
 const suite = new Suite('Transaction testing');
 
@@ -34,18 +69,22 @@ const setup = function () {
             const promise = deviceWallet.devSetMnemonic("cloud flower upset remain green metal below cup stem infant art thank");
             // const promise = deviceWallet.devGenerateMnemonic();
             promise.then(() => resolve("Setup done"));
+            pressButtonRight(); /// SetMnemonic promise
             // deviceWallet.devBackupDevice("cloud flower upset remain green metal below cup stem infant art thank");
         }, (msg) => {
             console.log(msg);
             reject(new Error("setup failed"));
         });
+        pressButtonRight(); /// Wipe promise
     });
 };
 
 const sample_1 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 1\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
+            console.log('\n\n\n\n\ninside!!\n\n\n\n\n\n');
             // --------------------
             const transactionInput = {
                 'hashIn': "181bd5656115172fe81451fae4fb56498a97744d89702e73da75ba91ed5200f9",
@@ -61,7 +100,9 @@ const sample_1 = function (t) {
             const transactionOutputs = [transactionOutput];
 
             const transactionPromise = deviceWallet.devSkycoinTransactionSign(transactionInputs, transactionOutputs, pinCodeReader, wordReader);
+
             transactionPromise.then((signatures) => {
+                console.log("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
                 t.equal(signatures.length, 1);
                 const checkSignPromise = deviceWallet.devCheckMessageSignature(
                     "2EU3JbveHdkxW6z5tdhbbB2kRAWvXC2pLzw",
@@ -73,12 +114,15 @@ const sample_1 = function (t) {
                     t.equal("Address emiting that signature: 2EU3JbveHdkxW6z5tdhbbB2kRAWvXC2pLzw", check);
                     resolve("Test success");
                 }, rejectPromise);
+                pressButtonRight();
             }, rejectPromise);
+            pressButtonRight(); /// Transaction promise
         }, rejectPromise);
     });
 };
 
 const sample_2 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 2\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -132,6 +176,7 @@ const sample_2 = function (t) {
 };
 
 const sample_3 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 3\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -207,6 +252,7 @@ const sample_3 = function (t) {
 };
 
 const sample_4 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 4\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -260,6 +306,7 @@ const sample_4 = function (t) {
 };
 
 const sample_5 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 5\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -297,6 +344,7 @@ const sample_5 = function (t) {
 };
 
 const sample_6 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 6\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -348,6 +396,7 @@ const sample_6 = function (t) {
 };
 
 const sample_7 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 7\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -416,6 +465,7 @@ const sample_7 = function (t) {
 };
 
 const sample_8 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 8\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -453,6 +503,7 @@ const sample_8 = function (t) {
 };
 
 const sample_9 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 9\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
@@ -498,6 +549,7 @@ const sample_9 = function (t) {
 };
 
 const sample_10 = function (t) {
+    console.log('\n-----------------------------------------------------------\nSAMPLE 10\n');
     return new Promise((resolve, reject) => {
         const setupPromise = setup();
         setupPromise.then(() => {
